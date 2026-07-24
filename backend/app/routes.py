@@ -1,6 +1,21 @@
 from app import app
 
 @app.route('/')
-@app.route('/index')
 def index():
-    return "Hello, World!"
+    return '''
+<html>
+    <head>
+        <title>API Page</title>
+    </head>
+    <body>
+        <h1>API Loaded</h1>
+    </body>
+</html>'''
+
+@app.route('/state')
+def state():
+    return
+
+@app.route('/interact', methods=['POST'])
+def interact():
+    pass
