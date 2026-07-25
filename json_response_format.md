@@ -3,7 +3,7 @@
 json´´´
 
 {
-  "contentType": True / False,
+  "contentType": "type",
   "content": {}
 }
 
