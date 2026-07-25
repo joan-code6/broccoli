@@ -7,18 +7,24 @@ function App() {
 
       <h1 className="text-3xl text-center">Event Name</h1>
 
-      <div className="grid grid-cols-2">
+      <div className="grid grid-cols-3">
 
-        <div className="flex justify-center">
-          <div className="h-48 w-6 bg-gray-300 rounded-full flex flex-col justify-end overflow-hidden">
-            <div className="bg-green-600 w-full" style={{ height: '50%' }}></div>
-          </div>
+        <div className="flex flex-col items-center justify-center gap-4">
+          <img src="/assets/broccoli.svg" className='size-75'></img>
+
+          <p className="text-3xl text-center">234</p>
         </div>
 
-        <div className="flex justify-center">
-          <div className="h-48 w-6 bg-gray-300 rounded-full flex flex-col justify-end overflow-hidden">
-            <div className="bg-green-600 w-full" style={{ height: '50%' }}></div>
-          </div>
+        <div className="flex flex-col items-center justify-center gap-4">
+          <img src="/assets/sun.svg" className='size-55'></img>
+
+          <img src="/assets/calendar.svg" className='size-55'></img>
+        </div>
+
+        <div className="flex flex-col items-center justify-center gap-4">
+          <img src="/assets/broccoli.svg" className='size-75'></img>
+
+          <p className="text-3xl text-center">234</p>
         </div>
 
       </div>

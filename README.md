@@ -8,4 +8,4 @@ A broccoli virtual pet multiplayer competitive game!
 
 ### AI usage declaration
 - Helped setup Tailwind CSS
-- Created UI progress bars and helped with the column layout
+- Showed me how to setup a column layout
