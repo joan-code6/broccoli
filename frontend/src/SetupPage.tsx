@@ -15,6 +15,11 @@ interface GameState {
   tag_assignments: Record<string, string | null>
 }
 
+interface TagConfig {
+  tag_config: Record<string, string>
+  valid_tag_uids: string[]
+}
+
 const SLOTS = [
   { role: 'TAG1', label: 'Player 1 — Sun', icon: '/assets/sun.svg' },
   { role: 'TAG2', label: 'Player 1 — Rain', icon: '/assets/rain.svg' },
@@ -22,23 +27,7 @@ const SLOTS = [
   { role: 'TAG4', label: 'Player 2 — Rain', icon: '/assets/rain.svg' },
 ]
 
-const VALID_TAG_UIDS = ['3285396700', '1964104076', '2601429390', '2600381038']
-
-const TAG_CONFIG: Record<string, string> = {
-  '003': '2600381038', '038': '2600381038', '103': '2600381038',
-  '381': '2600381038', '600': '2600381038', '810': '2600381038',
-  '014': '2601429390', '142': '2601429390', '293': '2601429390',
-  '390': '2601429390', '429': '2601429390', '601': '2601429390',
-  '939': '2601429390',
-  '040': '1964104076', '076': '1964104076', '104': '1964104076',
-  '196': '1964104076', '407': '1964104076', '410': '1964104076',
-  '641': '1964104076', '964': '1964104076',
-  '285': '3285396700', '328': '3285396700', '396': '3285396700',
-  '539': '3285396700', '670': '3285396700', '700': '3285396700',
-  '853': '3285396700', '967': '3285396700',
-}
-
-function findTagUid(scanned: string): string | null {
+function findTagUid(scanned: string, tagConfig: Record<string, string>): string | null {
   for (let i = 0; i <= scanned.length - 3; i++) {
     const sub = scanned.substring(i, i + 3)
     if (sub === '260') {
@@ -47,17 +36,25 @@ function findTagUid(scanned: string): string | null {
       }
       return '2600381038'
     }
-    if (sub in TAG_CONFIG) return TAG_CONFIG[sub]
+    if (sub in tagConfig) return tagConfig[sub]
   }
   return null
 }
 
 export default function SetupPage() {
   const [gameState, setGameState] = useState<GameState | null>(null)
+  const [tagConfig, setTagConfig] = useState<TagConfig | null>(null)
   const [currentStep, setCurrentStep] = useState(0)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const lastProcessedTag = useRef<string | null>(null)
+
+  useEffect(() => {
+    fetch('/tag_config')
+      .then(res => res.json())
+      .then(data => setTagConfig(data))
+      .catch(() => {})
+  }, [])
 
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -83,6 +80,7 @@ export default function SetupPage() {
   useEffect(() => {
     const scannedTag = gameState?.last_scanned_tag
     if (!scannedTag || typeof scannedTag !== 'string') return
+    if (!tagConfig) return
     const trimmed = scannedTag.trim()
     if (!trimmed || trimmed === lastProcessedTag.current) return
     if (currentStep >= 4) return
@@ -90,8 +88,8 @@ export default function SetupPage() {
     lastProcessedTag.current = trimmed
     setError(null)
 
-    const resolvedUid = findTagUid(trimmed)
-    if (!resolvedUid || !VALID_TAG_UIDS.includes(resolvedUid)) {
+    const resolvedUid = findTagUid(trimmed, tagConfig.tag_config)
+    if (!resolvedUid || !tagConfig.valid_tag_uids.includes(resolvedUid)) {
       setError(`"${trimmed}" is not a valid chip.`)
       return
     }
@@ -116,9 +114,17 @@ export default function SetupPage() {
         setError('Failed to assign. Try again.')
       }
     })
-  }, [gameState?.last_scanned_tag, gameState?.tag_assignments, currentStep, assignTag])
+  }, [gameState?.last_scanned_tag, gameState?.tag_assignments, currentStep, assignTag, tagConfig])
 
   const done = currentStep >= 4 && !success
+
+  if (!tagConfig) {
+    return (
+      <div className="min-h-[100svh] flex items-center justify-center">
+        <p className="text-gray-400">Loading...</p>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-[100svh] flex flex-col items-center justify-center px-4 py-12">

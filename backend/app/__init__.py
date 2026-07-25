@@ -24,6 +24,7 @@ game_state = {
 }
 
 TAG_MAP = {}
+inputs_lock = threading.Lock()
 
 TAG_CONFIG = {
     "003": "2600381038", "038": "2600381038", "103": "2600381038",
@@ -56,7 +57,8 @@ months = ["January","February","March","April","May","June","July","August","Sep
 def reset_game():
     game_state["tick"] = 0
     game_state["month"] = "January"
-    game_state["inputs"] = []
+    with inputs_lock:
+        game_state["inputs"] = []
     game_state["broccoli_1"] = 0
     game_state["broccoli_2"] = 0
     game_state["last_event_complete"] = 0
@@ -104,11 +106,16 @@ def game_loop():
                 pass
             else:
                 print("Scanned tag:", scanned_tag)
-                game_state["inputs"].append(scanned_tag)
+                with inputs_lock:
+                    game_state["inputs"].append(scanned_tag)
                 last_tag = scanned_tag
                 last_tag_tick = game_state["tick"]
 
-        for input_key in game_state["inputs"]:
+        with inputs_lock:
+            current_inputs = list(game_state["inputs"])
+            game_state["inputs"] = []
+
+        for input_key in current_inputs:
             if input_key in TAG_MAP:
                 input_key = TAG_MAP[input_key]
             else:
@@ -137,8 +144,6 @@ def game_loop():
                     game_state["event"] = None
                     game_state["broccoli_2"] += 5
                     game_state["last_event_complete"] = game_state["tick"]
-
-        game_state["inputs"] = []
 
         if game_state["month"] == "December":
             game_state["event"] = None

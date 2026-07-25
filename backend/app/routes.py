@@ -1,5 +1,5 @@
 from flask import request, jsonify
-from app import app, game_state, TAG_MAP, VALID_TAG_UIDS, find_tag_uid, reset_game, serial
+from app import app, game_state, TAG_MAP, VALID_TAG_UIDS, TAG_CONFIG, find_tag_uid, reset_game, serial, inputs_lock
 
 @app.route('/')
 def index():
@@ -63,7 +63,23 @@ def assign_tag():
 
     TAG_MAP[uid] = role
     print(f"Assigned tag {uid} -> {role}. TAG_MAP: {TAG_MAP}")
-    return jsonify({"status": "success", "tag_assignments": {r: None for r in valid_roles}})
+    tag_assignments = {}
+    for r in valid_roles:
+        assigned_uid = None
+        for u, ro in TAG_MAP.items():
+            if ro == r:
+                assigned_uid = u
+                break
+        tag_assignments[r] = assigned_uid
+    return jsonify({"status": "success", "tag_assignments": tag_assignments})
+
+
+@app.route('/tag_config')
+def tag_config():
+    return jsonify({
+        "tag_config": TAG_CONFIG,
+        "valid_tag_uids": VALID_TAG_UIDS,
+    })
 
 
 @app.route('/debug/serial')
@@ -84,7 +100,8 @@ def interact():
 
     if "input" in data:
         print(data["input"], "pressed")
-        game_state["inputs"].append(data["input"])
+        with inputs_lock:
+            game_state["inputs"].append(data["input"])
     else:
         print("no input provided")
 
