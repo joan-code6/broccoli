@@ -74,9 +74,11 @@ function App() {
       </div>
 
       <div className="grid grid-cols-3 min-h-[100svh]">
-        <div className="flex flex-col items-center justify-center gap-4">
-          <img src="/assets/broccoli.svg" className="size-75" />
-          <p className="text-3xl text-center">234</p>
+        <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center justify-end h-[70svh]">
+            <img src="/assets/broccoli.svg" className="size-75 object-contain object-bottom translate-y-[9px]" />
+          </div>
+          <p className="text-3xl text-center mt-4">234</p>
         </div>
 
         <div className="flex flex-col items-center justify-center gap-4">
@@ -84,9 +86,11 @@ function App() {
           <Calendar />
         </div>
 
-        <div className="flex flex-col items-center justify-center gap-4">
-          <img src="/assets/broccoli.svg" className="size-75" />
-          <p className="text-3xl text-center">234</p>
+        <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center justify-end h-[70svh]">
+            <img src="/assets/broccoli.svg" className="size-75 object-contain object-bottom translate-y-[9px]" />
+          </div>
+          <p className="text-3xl text-center mt-4">234</p>
         </div>
       </div>
     </>
