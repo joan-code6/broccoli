@@ -6,7 +6,12 @@
 }
 
 body {
-  @apply bg-sky-100;
+  background-image: linear-gradient(
+    to bottom,
+    theme('colors.sky-100') 70%,
+    theme('--color-green-100') 30%
+  );
+  min-height: 100vh; /* Ensures the split covers the full screen height */
 }
 
 #root {
