@@ -15,13 +15,8 @@ def index():
 
 @app.route('/state')
 def state():
-    has_changed = game_state_changed["changed"]
-    game_state_changed["changed"] = False
+    return game_state,
 
-    return {
-        "changed": has_changed,
-        "state": game_state,
-    }
 
 # curl -H "Content-Type: application/json" --request POST -d '{"key":"1"}' http://localhost:5000/interact
 @app.route('/interact', methods=['POST'])
