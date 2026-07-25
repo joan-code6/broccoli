@@ -14,14 +14,8 @@ game_state = {
     "tick": 0,
     "month": "January",
     "inputs": [],
-    "broccolis": [
-        {
-            "points": 0,
-        },
-        {
-            "points": 0,
-        },
-    ],
+    "broccoli_1": 0,
+    "broccoli_2": 0,
     "last_event_complete": 0,
     "event": None
 }
@@ -47,8 +41,9 @@ def game_loop():
             print("game end")
             return
 
-        for broccoli in game_state["broccolis"]:
-            broccoli["points"] += 1
+        if game_state["tick"] % 5 == 0:
+            game_state["broccoli_1"] += 1
+            game_state["broccoli_2"] += 1
 
         attempt_spawn_event()
 
@@ -64,17 +59,17 @@ def game_loop():
             if game_state["event"] == "Sun":
                 if input_key == "1" or input_key == "TAG1":
                     game_state["event"] = None
-                    game_state["broccolis"][0]["points"] += 100
+                    game_state["broccoli_1"] += 5
                 elif input_key == "3" or input_key == "TAG3":
                     game_state["event"] = None
-                    game_state["broccolis"][1]["points"] += 100
+                    game_state["broccoli_2"] += 5
             elif game_state["event"] == "Rain":
                 if input_key == "2" or input_key == "TAG2":
                     game_state["event"] = None
-                    game_state["broccolis"][0]["points"] += 100
+                    game_state["broccoli_1"] += 5
                 elif input_key == "4" or input_key == "TAG4":
                     game_state["event"] = None
-                    game_state["broccolis"][1]["points"] += 100
+                    game_state["broccoli_2"] += 5
 
         game_state["inputs"] = []
 
