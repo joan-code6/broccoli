@@ -52,8 +52,13 @@ def game_loop():
 
         attempt_spawn_event()
 
-        serial.read_line()
-
+        try:
+            scanned_tag = serial.read_line()
+            if scanned_tag is not None:
+                print("Scanned tag:", scanned_tag)
+                game_state["inputs"].append(scanned_tag)
+        except:
+            print("Error encountered during scanning")
 
         for input_key in game_state["inputs"]:
             if game_state["event"] == "Sun":
