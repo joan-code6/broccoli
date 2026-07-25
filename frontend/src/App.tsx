@@ -4,6 +4,16 @@ import './App.css'
 function App() {
   return (
     <>
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
+        <img
+          src="/assets/clouds/1.webp"
+          className="absolute top-0 animate-[marquee_30s_linear_infinite]"
+        />
+        <img
+          src="/assets/clouds/4.webp"
+          className="absolute top-0 scale-50 animate-[marquee_46s_linear_infinite] [animation-delay:-16s]"
+        />
+      </div>
 
       <div className="grid grid-cols-3">
 
