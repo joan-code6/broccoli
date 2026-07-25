@@ -1,9 +1,5 @@
-import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'signup_screen.dart';
 import 'nfc_screen.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -15,71 +11,27 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  bool _obscurePassword = true;
-  bool _isChecking = false;
   String? _errorMessage;
-  Timer? _errorTimer;
 
   @override
   void dispose() {
     _emailController.dispose();
-    _passwordController.dispose();
-    _errorTimer?.cancel();
     super.dispose();
   }
 
-  void _showError(String message) {
-    _errorTimer?.cancel();
-    setState(() {
-      _errorMessage = message;
-    });
-    _errorTimer = Timer(const Duration(seconds: 2), () {
-      if (!mounted) return;
-      setState(() {
-        _errorMessage = null;
-      });
-    });
-  }
-
-  Future<void> _handleLogin() async {
+  void _handleLogin() {
     final email = _emailController.text.trim();
-    final password = _passwordController.text;
 
-    if (email.isEmpty || password.isEmpty) {
-      _showError('Enter your email and password');
+    if (email.isEmpty) {
+      setState(() {
+        _errorMessage = 'Enter your username';
+      });
       return;
     }
 
-    setState(() {
-      _isChecking = true;
-      _errorMessage = null;
-    });
-    _errorTimer?.cancel();
-
-    final prefs = await SharedPreferences.getInstance();
-    final savedEmail = prefs.getString('saved_email');
-    final savedPassword = prefs.getString('saved_password');
-
-    if (!mounted) return;
-
-    final isMatch =
-        savedEmail != null &&
-        savedPassword != null &&
-        email == savedEmail &&
-        password == savedPassword;
-
-    setState(() {
-      _isChecking = false;
-    });
-
-    if (isMatch) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const NfcScreen()),
-      );
-    } else {
-      _showError('Incorrect email or password');
-    }
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => const NfcScreen()),
+    );
   }
 
   Widget _blurBlob({
@@ -101,8 +53,6 @@ class _LoginScreenState extends State<LoginScreen> {
     required TextEditingController controller,
     required String hint,
     required IconData icon,
-    bool obscureText = false,
-    Widget? suffixIcon,
   }) {
     return Container(
       height: 48,
@@ -112,11 +62,9 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       child: TextField(
         controller: controller,
-        obscureText: obscureText,
         style: const TextStyle(fontSize: 14),
         decoration: InputDecoration(
           prefixIcon: Icon(icon, color: Colors.grey, size: 20),
-          suffixIcon: suffixIcon,
           hintText: hint,
           hintStyle: const TextStyle(fontSize: 14, color: Colors.grey),
           border: InputBorder.none,
@@ -183,42 +131,22 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 6),
                       const Text(
-                        'Hey enter your details to sign in to your account',
+                        'Enter your username to start playing',
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 13, color: Colors.grey),
                       ),
                       const SizedBox(height: 28),
                       _buildTextField(
                         controller: _emailController,
-                        hint: 'Email',
+                        hint: 'Username',
                         icon: Icons.person_outline,
-                      ),
-                      const SizedBox(height: 14),
-                      _buildTextField(
-                        controller: _passwordController,
-                        hint: 'Enter your password',
-                        icon: Icons.lock_outline,
-                        obscureText: _obscurePassword,
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscurePassword
-                                ? Icons.visibility_off_outlined
-                                : Icons.visibility_outlined,
-                            color: Colors.grey,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _obscurePassword = !_obscurePassword;
-                            });
-                          },
-                        ),
                       ),
                       const SizedBox(height: 24),
                       SizedBox(
                         width: double.infinity,
                         height: 52,
                         child: ElevatedButton(
-                          onPressed: _isChecking ? null : _handleLogin,
+                          onPressed: _handleLogin,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF6C63FF),
                             shape: RoundedRectangleBorder(
@@ -226,23 +154,14 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             elevation: 0,
                           ),
-                          child: _isChecking
-                              ? const SizedBox(
-                                  width: 20,
-                                  height: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white,
-                                  ),
-                                )
-                              : const Text(
-                                  'Login',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                    color: Colors.white,
-                                  ),
-                                ),
+                          child: const Text(
+                            'Login',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
                       const SizedBox(height: 12),
@@ -255,38 +174,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             color: Colors.red,
                           ),
                         ),
-                      const SizedBox(height: 20),
-                      Align(
-                        alignment: Alignment.center,
-                        child: RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: Colors.grey,
-                            ),
-                            children: [
-                              const TextSpan(text: "Don't have an account? "),
-                              TextSpan(
-                                text: 'Signup Now',
-                                style: const TextStyle(
-                                  color: Color(0xFF6C63FF),
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const SignupScreen(),
-                                      ),
-                                    );
-                                  },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),

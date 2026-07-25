@@ -12,7 +12,6 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
-  shared_preferences: ^2.2.2
   lottie: ^3.1.2
   nfc_manager: ^3.5.0
 
