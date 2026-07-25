@@ -4,7 +4,7 @@ json´´´
 
 {
   "contentType": True / False,
-  "content": True / False
+  "content": {}
 }
 
 ´´´
