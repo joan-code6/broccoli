@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
@@ -17,12 +18,27 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _obscurePassword = true;
   bool _isChecking = false;
   String? _errorMessage;
+  Timer? _errorTimer;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _errorTimer?.cancel();
     super.dispose();
+  }
+
+  void _showError(String message) {
+    _errorTimer?.cancel();
+    setState(() {
+      _errorMessage = message;
+    });
+    _errorTimer = Timer(const Duration(seconds: 2), () {
+      if (!mounted) return;
+      setState(() {
+        _errorMessage = null;
+      });
+    });
   }
 
   Future<void> _handleLogin() async {
@@ -30,9 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
     final password = _passwordController.text;
 
     if (email.isEmpty || password.isEmpty) {
-      setState(() {
-        _errorMessage = 'Enter your email and password';
-      });
+      _showError('Enter your email and password');
       return;
     }
 
@@ -40,6 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
       _isChecking = true;
       _errorMessage = null;
     });
+    _errorTimer?.cancel();
 
     final prefs = await SharedPreferences.getInstance();
     final savedEmail = prefs.getString('saved_email');
@@ -55,13 +70,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
     setState(() {
       _isChecking = false;
-      _errorMessage = isMatch ? null : 'Incorrect email or password';
     });
 
     if (isMatch) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(const SnackBar(content: Text('Login complete')));
+    } else {
+      _showError('Incorrect email or password');
     }
   }
 
@@ -153,10 +169,11 @@ class _LoginScreenState extends State<LoginScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const Text(
                         'Login',
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
@@ -166,12 +183,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(height: 6),
                       const Text(
                         'Hey enter your details to sign in to your account',
+                        textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 13, color: Colors.grey),
                       ),
                       const SizedBox(height: 28),
                       _buildTextField(
                         controller: _emailController,
-                        hint: 'Email',
+                        hint: 'Enter your username',
                         icon: Icons.person_outline,
                       ),
                       const SizedBox(height: 14),
@@ -230,6 +248,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       if (_errorMessage != null)
                         Text(
                           _errorMessage!,
+                          textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 13,
                             color: Colors.red,
@@ -239,6 +258,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       Align(
                         alignment: Alignment.center,
                         child: RichText(
+                          textAlign: TextAlign.center,
                           text: TextSpan(
                             style: const TextStyle(
                               fontSize: 13,

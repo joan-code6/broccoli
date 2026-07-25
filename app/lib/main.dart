@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         primaryColor: const Color(0xFF6C63FF),
         fontFamily: 'Roboto',
       ),
-      home: const LoginScreen(),
+      home: LoginScreen(),
     );
   }
 }

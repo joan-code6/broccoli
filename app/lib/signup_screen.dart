@@ -159,20 +159,26 @@ class _SignupScreenState extends State<SignupScreen> {
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      IconButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        icon: const Icon(
-                          Icons.arrow_back,
-                          color: Color(0xFF6C63FF),
+                      SizedBox(
+                        width: double.infinity,
+                        child: Align(
+                          alignment: Alignment.centerLeft,
+                          child: IconButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            icon: const Icon(
+                              Icons.arrow_back,
+                              color: Color(0xFF6C63FF),
+                            ),
+                            padding: EdgeInsets.zero,
+                          ),
                         ),
-                        padding: EdgeInsets.zero,
-                        alignment: Alignment.centerLeft,
                       ),
                       const SizedBox(height: 8),
                       const Text(
                         'Sign up',
+                        textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
@@ -182,6 +188,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       const SizedBox(height: 6),
                       const Text(
                         'Create an account to start playing',
+                        textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 13, color: Colors.grey),
                       ),
                       const SizedBox(height: 28),
@@ -246,6 +253,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       if (_errorMessage != null)
                         Text(
                           _errorMessage!,
+                          textAlign: TextAlign.center,
                           style: const TextStyle(
                             fontSize: 13,
                             color: Colors.red,
