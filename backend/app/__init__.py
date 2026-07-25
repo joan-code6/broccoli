@@ -1,7 +1,7 @@
 import random
 import threading
 import time
-from serial_read import SerialReader
+from .serial_read import SerialReader
 
 from flask import Flask
 
