@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { computeScale } from './broccoli-growth'
 
 const MONTHS = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'Jun.', 'Jul.', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.']
 
@@ -60,6 +61,12 @@ function Calendar() {
 }
 
 function App() {
+  const [score1, setScore1] = useState(30)
+  const [score2, setScore2] = useState(60)
+
+  const scale1 = computeScale(score1)
+  const scale2 = computeScale(score2)
+
   return (
     <>
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
@@ -76,9 +83,21 @@ function App() {
       <div className="grid grid-cols-3 min-h-[100svh]">
         <div className="flex flex-col items-center">
           <div className="flex flex-col items-center justify-end h-[70svh]">
-            <img src="/assets/broccoli.svg" className="size-75 object-contain object-bottom translate-y-[9px]" />
+            <img
+              src="/assets/broccoli.svg"
+              className="size-75 object-contain object-bottom"
+              style={{ transform: `scale(${scale1}) translateY(9px)`, transformOrigin: 'bottom center' }}
+            />
           </div>
-          <p className="text-3xl text-center mt-4">234</p>
+          <p className="text-3xl text-center mt-4">{score1}</p>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={score1}
+            onChange={e => setScore1(Number(e.target.value))}
+            className="mt-2 w-48"
+          />
         </div>
 
         <div className="flex flex-col items-center justify-center gap-4">
@@ -88,9 +107,21 @@ function App() {
 
         <div className="flex flex-col items-center">
           <div className="flex flex-col items-center justify-end h-[70svh]">
-            <img src="/assets/broccoli.svg" className="size-75 object-contain object-bottom translate-y-[9px]" />
+            <img
+              src="/assets/broccoli.svg"
+              className="size-75 object-contain object-bottom"
+              style={{ transform: `scale(${scale2}) translateY(9px)`, transformOrigin: 'bottom center' }}
+            />
           </div>
-          <p className="text-3xl text-center mt-4">234</p>
+          <p className="text-3xl text-center mt-4">{score2}</p>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={score2}
+            onChange={e => setScore2(Number(e.target.value))}
+            className="mt-2 w-48"
+          />
         </div>
       </div>
     </>
