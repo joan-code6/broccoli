@@ -5,6 +5,7 @@ app = Flask(__name__)
 
 game_state = {
     "tick": 0,
+    "inputs": []
 }
 
 def game_loop():
