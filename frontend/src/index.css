@@ -11,6 +11,7 @@
 
 @theme {
   --font-sans: "Excalifont", "Line Seed JP", sans-serif;
+  --font-line: "Line Seed JP", sans-serif;
 }
 
 body {

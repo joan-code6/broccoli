@@ -235,7 +235,7 @@ function App() {
               style={{ transform: `scale(${scale1}) translateY(9px)`, transformOrigin: 'bottom center', transition: 'transform 0.3s ease-out' }}
             />
           </div>
-          <p className="text-3xl text-center mt-4">{gameState?.broccoli_1 ?? 0}</p>
+          <p className="text-3xl text-center mt-4 font-line">{gameState?.broccoli_1 ?? 0}</p>
         </div>
 
         <div className="flex flex-col items-center justify-center gap-4 relative pt-55">
@@ -266,7 +266,7 @@ function App() {
               style={{ transform: `scale(${scale2}) translateY(9px)`, transformOrigin: 'bottom center', transition: 'transform 0.3s ease-out' }}
             />
           </div>
-          <p className="text-3xl text-center mt-4">{gameState?.broccoli_2 ?? 0}</p>
+          <p className="text-3xl text-center mt-4 font-line">{gameState?.broccoli_2 ?? 0}</p>
         </div>
       </div>
 
