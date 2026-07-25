@@ -1,4 +1,4 @@
-from app import app
+from app import app, game_state
 
 @app.route('/')
 def index():
@@ -14,7 +14,7 @@ def index():
 
 @app.route('/state')
 def state():
-    return
+    return game_state
 
 @app.route('/interact', methods=['POST'])
 def interact():
