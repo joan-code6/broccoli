@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
-import { Link } from 'react-router-dom'
 import { computeScale } from './broccoli-growth'
+import RoughCard from './RoughCard'
+import SetupOverlay from './SetupOverlay'
 
 const MONTHS = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'Jun.', 'Jul.', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.']
 const FULL_MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
@@ -74,6 +75,7 @@ function Calendar({ month }: { month: string }) {
 
 function App() {
   const [gameState, setGameState] = useState<GameState | null>(null)
+  const [showSetup, setShowSetup] = useState(false)
 
   useEffect(() => {
     const interval = setInterval(async () => {
@@ -170,47 +172,57 @@ function App() {
         />
       </div>
 
-      {phase === 'over' && (
+      {phase === 'over' && !showSetup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-2xl p-10 shadow-2xl flex flex-col items-center gap-6">
-            <h2 className="text-4xl font-bold">
+          <RoughCard className="p-16 px-24 shadow-2xl flex flex-col items-center gap-10 w-full max-w-2xl text-center">
+            <h1 className="text-6xl font-black text-white drop-shadow-2xl">
               {winner === 1 && 'Player 1 Wins!'}
               {winner === 2 && 'Player 2 Wins!'}
               {winner === 0 && "It's a Tie!"}
-            </h2>
-            <div className="flex gap-4 text-lg">
-              <span>Player 1: {gameState?.broccoli_1 ?? 0}</span>
-              <span>|</span>
-              <span>Player 2: {gameState?.broccoli_2 ?? 0}</span>
+            </h1>
+            <div className="flex gap-10 text-3xl font-bold text-white/70">
+              <span>P1: {gameState?.broccoli_1 ?? 0}</span>
+              <span className="text-white/30">|</span>
+              <span>P2: {gameState?.broccoli_2 ?? 0}</span>
             </div>
-            <button
-              onClick={handleStart}
-              className="px-8 py-3 bg-green-600 hover:bg-green-700 text-white text-xl font-bold rounded-xl transition-colors cursor-pointer"
-            >
-              Play Again
-            </button>
-          </div>
+            <div className="flex flex-col items-center gap-5">
+              <button
+                onClick={handleStart}
+                className="px-12 py-5 bg-white/10 hover:bg-white/20 text-white text-2xl font-bold backdrop-blur-sm transition-all cursor-pointer"
+              >
+                Play Again
+              </button>
+              <button
+                onClick={() => setShowSetup(true)}
+                className="text-lg text-white/50 hover:text-white/80 transition-colors cursor-pointer"
+              >
+                Setup Tags
+              </button>
+            </div>
+          </RoughCard>
         </div>
       )}
 
-      {phase === 'waiting' && (
+      {phase === 'waiting' && !showSetup && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-          <div className="bg-white rounded-2xl p-10 shadow-2xl flex flex-col items-center gap-6">
-            <h2 className="text-4xl font-bold">Broccoli</h2>
-            <button
-              onClick={handleStart}
-              disabled={!allTagsAssigned}
-              className="px-8 py-3 bg-green-600 hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white text-xl font-bold rounded-xl transition-colors cursor-pointer"
-            >
-              Start Game
-            </button>
-            <Link
-              to="/setup"
-              className="text-lg text-blue-600 hover:underline"
-            >
-              Setup Tags
-            </Link>
-          </div>
+          <RoughCard className="p-16 px-24 shadow-2xl flex flex-col items-center gap-10 w-full max-w-2xl">
+            <h1 className="text-6xl font-black text-white drop-shadow-2xl">Broccoli</h1>
+            <div className="flex flex-col items-center gap-5">
+              <button
+                onClick={handleStart}
+                disabled={!allTagsAssigned}
+                className="px-12 py-5 bg-white/10 hover:bg-white/20 disabled:bg-white/5 disabled:cursor-not-allowed text-white text-2xl font-bold backdrop-blur-sm transition-all cursor-pointer"
+              >
+                Start Game
+              </button>
+              <button
+                onClick={() => setShowSetup(true)}
+                className="text-lg text-white/50 hover:text-white/80 transition-colors cursor-pointer"
+              >
+                Setup Tags
+              </button>
+            </div>
+          </RoughCard>
         </div>
       )}
 
@@ -257,6 +269,8 @@ function App() {
           <p className="text-3xl text-center mt-4">{gameState?.broccoli_2 ?? 0}</p>
         </div>
       </div>
+
+      {showSetup && <SetupOverlay onClose={() => setShowSetup(false)} />}
     </>
   )
 }

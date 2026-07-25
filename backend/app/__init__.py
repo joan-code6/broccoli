@@ -124,7 +124,7 @@ def game_loop():
                 if matched_uid and matched_uid in TAG_MAP:
                     input_key = TAG_MAP[matched_uid]
                 elif input_key not in ("1", "2", "3", "4", "TAG1", "TAG2", "TAG3", "TAG4"):
-                    print(f"Unknown tag: {input_key} — add it to TAG_MAP in __init__.py")
+                    print(f"Unknown tag: {input_key} - add it to TAG_MAP in __init__.py")
                     continue
 
             if game_state["event"] == "Sun":
@@ -155,7 +155,7 @@ def game_loop():
             else:
                 game_state["winner"] = 0
             game_state["phase"] = "over"
-            print("Game complete — Winner:", game_state["winner"])
+            print("Game complete - Winner:", game_state["winner"])
 
 
 threading.Thread(target=game_loop, daemon=True).start()

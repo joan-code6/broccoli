@@ -1,8 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=LINE+Seed+JP&display=swap');
 @import "tailwindcss";
 
+@font-face {
+  font-family: 'Excalifont';
+  src: url('/fonts/Excalifont-Regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 @theme {
-  --font-sans: "Line Seed JP", sans-serif;
+  --font-sans: "Excalifont", "Line Seed JP", sans-serif;
 }
 
 body {
@@ -69,6 +77,3 @@ body {
     opacity: 0.1;
   }
 }
-
-
-
