@@ -106,3 +106,17 @@ def interact():
         print("no input provided")
 
     return jsonify({"status": "success","received": data})
+
+@app.route('/register_player', methods=['POST'])
+def register_player():
+    data = request.get_json()
+    print(data)
+
+    if "username" in data:
+        print(data["username"], "pressed")
+        with inputs_lock:
+            game_state["usernames"].append(data["username"])
+            return jsonify({"status": "success","received": data})
+    else:
+        print("no input provided")
+        return jsonify({"status": "error","received": ""})
