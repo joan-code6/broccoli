@@ -95,7 +95,9 @@ function App() {
     const curBroc2 = gameState?.broccoli_2 ?? 0
 
     if (prevEvent !== null && currentEvent === null && !isFlying) {
-      const player: 1 | 2 = curBroc1 > prevBroc1 ? 1 : 2
+      const delta1 = curBroc1 - prevBroc1
+      const delta2 = curBroc2 - prevBroc2
+      const player: 1 | 2 = delta1 > delta2 ? 1 : 2
       flyingPlayerRef.current = player
       setFlyingEvent(prevEvent)
       setIsFlying(true)
@@ -198,7 +200,7 @@ function App() {
             <img
               src="/assets/broccoli.svg"
               className="size-75 object-contain object-bottom"
-              style={{ transform: `scale(${scale1}) translateY(9px)`, transformOrigin: 'bottom center' }}
+              style={{ transform: `scale(${scale1}) translateY(9px)`, transformOrigin: 'bottom center', transition: 'transform 0.3s ease-out' }}
             />
           </div>
           <p className="text-3xl text-center mt-4">{gameState?.broccoli_1 ?? 0}</p>
@@ -229,7 +231,7 @@ function App() {
             <img
               src="/assets/broccoli.svg"
               className="size-75 object-contain object-bottom"
-              style={{ transform: `scale(${scale2}) translateY(9px)`, transformOrigin: 'bottom center' }}
+              style={{ transform: `scale(${scale2}) translateY(9px)`, transformOrigin: 'bottom center', transition: 'transform 0.3s ease-out' }}
             />
           </div>
           <p className="text-3xl text-center mt-4">{gameState?.broccoli_2 ?? 0}</p>
