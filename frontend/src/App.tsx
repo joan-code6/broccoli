@@ -24,6 +24,24 @@ function Calendar({ month }: { month: string }) {
   const current = monthIndex >= 0 ? MONTHS[monthIndex] : month
   const next = monthIndex >= 0 ? MONTHS[(monthIndex + 1) % MONTHS.length] : month
 
+  const prevMonthRef = useRef(month)
+  const [folding, setFolding] = useState(false)
+  const [displayMonth, setDisplayMonth] = useState(current)
+
+  useEffect(() => {
+    if (prevMonthRef.current !== month) {
+      setFolding(true)
+      const timer = setTimeout(() => {
+        setDisplayMonth(current)
+        setFolding(false)
+      }, 600)
+      prevMonthRef.current = month
+      return () => clearTimeout(timer)
+    } else {
+      setDisplayMonth(current)
+    }
+  }, [month, current])
+
   return (
     <div className="flex flex-col items-center gap-4">
       <div
@@ -40,10 +58,10 @@ function Calendar({ month }: { month: string }) {
         </div>
 
         <div className="relative">
-          <div className="relative size-55">
+          <div className={`relative size-55 ${folding ? 'animate-calendar-fold' : ''}`}>
             <img src="/assets/calendar.svg" className="size-55" />
             <span className="absolute top-[65%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-xl text-white font-bold scale-200">
-              {current}
+              {displayMonth}
             </span>
           </div>
         </div>
