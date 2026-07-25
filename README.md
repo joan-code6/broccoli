@@ -13,3 +13,4 @@ AI helped with:
 - adding scrolling clouds
 - centering a div
 - part of the calendar animation
+- parts of the broccoli growing scaling algorithm
