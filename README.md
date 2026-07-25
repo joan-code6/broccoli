@@ -7,5 +7,9 @@ A broccoli virtual pet multiplayer competitive game!
 - Frontend displaying the 2 broccolis too
 
 ### AI usage declaration
-- Helped setup Tailwind CSS
-- Showed me how to setup a column layout
+AI helped with:
+- setting up Tailwind CSS
+- showing us how to setup a column layout
+- adding scrolling clouds
+- centering a div
+- part of the calendar animation
