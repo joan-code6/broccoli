@@ -12,18 +12,14 @@ game_state = {
     "inputs": [],
     "broccolis": [
         {
-            "points": 100,
+            "points": 0,
         },
         {
-            "points": 100,
+            "points": 0,
         },
     ],
     "last_event_complete": 0,
     "event": None
-}
-
-game_state_changed = {
-    "changed": True,
 }
 
 months = ["January","February","March","April","May","June","July","August","September","October","November","December"]
