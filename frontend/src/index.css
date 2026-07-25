@@ -11,7 +11,7 @@ body {
     theme('colors.sky-200') 70%,
     theme('--color-green-100') 30%
   );
-  min-height: 100vh; /* Ensures the split covers the full screen height */
+  min-height: 100vh;
 }
 
 #root {
@@ -21,4 +21,23 @@ body {
 @keyframes marquee {
   0% { transform: translateX(-50%); }
   100% { transform: translateX(100%); }
+}
+
+@keyframes calendar-fold {
+  0% {
+    transform: rotateX(0deg);
+    opacity: 1;
+  }
+  40% {
+    transform: rotateX(30deg);
+    opacity: 1;
+  }
+  100% {
+    transform: rotateX(90deg);
+    opacity: 0;
+  }
+}
+
+.animate-calendar-fold {
+  animation: calendar-fold 0.6s ease-in forwards;
 }
