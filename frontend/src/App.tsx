@@ -41,7 +41,7 @@ function Calendar() {
         >
           <div className="relative size-55">
             <img src="/assets/calendar.svg" className="size-55" />
-            <span className="absolute top-[65%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-xl font-bold scale-200">
+            <span className="absolute text-white top-[65%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-xl font-bold scale-200">
               {MONTHS[displayedMonth]}
             </span>
           </div>
