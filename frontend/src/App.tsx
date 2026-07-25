@@ -21,26 +21,28 @@ interface GameState {
 
 function Calendar({ month }: { month: string }) {
   const monthIndex = FULL_MONTHS.indexOf(month)
-  const current = monthIndex >= 0 ? MONTHS[monthIndex] : month
-  const next = monthIndex >= 0 ? MONTHS[(monthIndex + 1) % MONTHS.length] : month
+  const currentProp = monthIndex >= 0 ? MONTHS[monthIndex] : month
 
   const prevMonthRef = useRef(month)
   const [folding, setFolding] = useState(false)
-  const [displayMonth, setDisplayMonth] = useState(current)
+  const [displayMonth, setDisplayMonth] = useState(currentProp)
+
+  const displayIdx = MONTHS.indexOf(displayMonth)
+  const next = displayIdx >= 0 ? MONTHS[(displayIdx + 1) % MONTHS.length] : currentProp
 
   useEffect(() => {
     if (prevMonthRef.current !== month) {
       setFolding(true)
       const timer = setTimeout(() => {
-        setDisplayMonth(current)
+        setDisplayMonth(currentProp)
         setFolding(false)
       }, 600)
       prevMonthRef.current = month
       return () => clearTimeout(timer)
     } else {
-      setDisplayMonth(current)
+      setDisplayMonth(currentProp)
     }
-  }, [month, current])
+  }, [month, currentProp])
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -51,7 +53,7 @@ function Calendar({ month }: { month: string }) {
         <div className="absolute inset-0">
           <div className="relative size-55">
             <img src="/assets/calendar.svg" className="size-55" />
-            <span className="absolute top-[65%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-xl font-bold scale-200">
+            <span className="absolute top-[65%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-xl font-bold scale-200" style={{ color: 'white' }}>
               {next}
             </span>
           </div>
