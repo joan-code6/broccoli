@@ -12,4 +12,4 @@ AI helped with:
 - showing us how to setup a column layout
 - adding scrolling clouds
 - centering a div
-- calendar animation
+- part of the calendar animation

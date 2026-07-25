@@ -19,8 +19,12 @@ body {
 }
 
 @keyframes marquee {
-  0% { transform: translateX(-50%); }
-  100% { transform: translateX(100%); }
+  0% {
+    translate: -100% 0; /* Fully off-screen to the left */
+  }
+  100% {
+    translate: 100vw 0; /* Fully off-screen to the right */
+  }
 }
 
 @keyframes calendar-fold {
