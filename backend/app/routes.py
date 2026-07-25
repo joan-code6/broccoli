@@ -1,5 +1,5 @@
 from flask import request, jsonify
-from app import app, game_state, game_state_changed
+from app import app, game_state
 
 @app.route('/')
 def index():
