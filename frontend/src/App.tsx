@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { computeScale } from './broccoli-growth'
 
@@ -74,8 +74,58 @@ function App() {
   }, [])
 
   const currentEvent = gameState?.event ?? null
-  const isFlying = false
-  const flyOffset = null as {dx: number; dy: number} | null
+
+  const broccoli1Ref = useRef<HTMLDivElement>(null)
+  const broccoli2Ref = useRef<HTMLDivElement>(null)
+  const eventRef = useRef<HTMLDivElement>(null)
+  const prevEventRef = useRef<'Sun' | 'Rain' | null>(null)
+  const prevBroc1Ref = useRef<number>(0)
+  const prevBroc2Ref = useRef<number>(0)
+  const flyingPlayerRef = useRef<1 | 2>(1)
+
+  const [isFlying, setIsFlying] = useState(false)
+  const [flyOffset, setFlyOffset] = useState<{dx: number; dy: number} | null>(null)
+  const [flyingEvent, setFlyingEvent] = useState<'Sun' | 'Rain' | null>(null)
+
+  useEffect(() => {
+    const prevEvent = prevEventRef.current
+    const prevBroc1 = prevBroc1Ref.current
+    const prevBroc2 = prevBroc2Ref.current
+    const curBroc1 = gameState?.broccoli_1 ?? 0
+    const curBroc2 = gameState?.broccoli_2 ?? 0
+
+    if (prevEvent !== null && currentEvent === null && !isFlying) {
+      const player: 1 | 2 = curBroc1 > prevBroc1 ? 1 : 2
+      flyingPlayerRef.current = player
+      setFlyingEvent(prevEvent)
+      setIsFlying(true)
+    }
+
+    prevEventRef.current = currentEvent
+    prevBroc1Ref.current = curBroc1
+    prevBroc2Ref.current = curBroc2
+  }, [currentEvent, gameState?.broccoli_1, gameState?.broccoli_2, isFlying])
+
+  useEffect(() => {
+    if (isFlying && flyOffset === null) {
+      const player = flyingPlayerRef.current
+      const targetRef = player === 1 ? broccoli1Ref : broccoli2Ref
+
+      if (eventRef.current && targetRef.current) {
+        const eventRect = eventRef.current.getBoundingClientRect()
+        const targetRect = targetRef.current.getBoundingClientRect()
+        setFlyOffset({
+          dx: targetRect.left + targetRect.width / 2 - (eventRect.left + eventRect.width / 2),
+          dy: targetRect.top + targetRect.height / 2 - (eventRect.top + eventRect.height / 2),
+        })
+        setTimeout(() => {
+          setIsFlying(false)
+          setFlyOffset(null)
+          setFlyingEvent(null)
+        }, 650)
+      }
+    }
+  }, [isFlying, flyOffset])
 
   const scale1 = computeScale(gameState?.broccoli_1 ?? 0)
   const scale2 = computeScale(gameState?.broccoli_2 ?? 0)
@@ -144,7 +194,7 @@ function App() {
 
       <div className="grid grid-cols-3 min-h-[100svh]">
         <div className="flex flex-col items-center">
-          <div className="broccoli-1 flex flex-col items-center justify-end h-[70svh]">
+          <div ref={broccoli1Ref} className="broccoli-1 flex flex-col items-center justify-end h-[70svh]">
             <img
               src="/assets/broccoli.svg"
               className="size-75 object-contain object-bottom"
@@ -155,17 +205,17 @@ function App() {
         </div>
 
         <div className="flex flex-col items-center justify-center gap-4 relative pt-55">
-          {currentEvent && (
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 size-55 flex items-center justify-center">
+          {(currentEvent || isFlying) && (
+            <div ref={eventRef} className="absolute top-0 left-1/2 -translate-x-1/2 size-55 flex items-center justify-center">
               <img
-                src={currentEvent === 'Sun' ? '/assets/sun.svg' : '/assets/rain.svg'}
+                src={(currentEvent ?? flyingEvent) === 'Sun' ? '/assets/sun.svg' : '/assets/rain.svg'}
                 className="size-55"
                 style={{
-                  transition: isFlying ? 'all 0.6s ease-in' : undefined,
+                  transition: isFlying && flyOffset ? 'all 0.6s ease-in' : undefined,
                   transform: isFlying && flyOffset
                     ? `translate(${flyOffset.dx}px, ${flyOffset.dy}px) scale(0.15)`
                     : undefined,
-                  opacity: isFlying ? 0 : 1,
+                  opacity: isFlying && flyOffset ? 0 : 1,
                 }}
               />
             </div>
@@ -175,7 +225,7 @@ function App() {
         </div>
 
         <div className="flex flex-col items-center">
-          <div className="broccoli-2 flex flex-col items-center justify-end h-[70svh]">
+          <div ref={broccoli2Ref} className="broccoli-2 flex flex-col items-center justify-end h-[70svh]">
             <img
               src="/assets/broccoli.svg"
               className="size-75 object-contain object-bottom"
