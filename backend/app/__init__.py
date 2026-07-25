@@ -62,17 +62,17 @@ def game_loop():
 
         for input_key in game_state["inputs"]:
             if game_state["event"] == "Sun":
-                if input_key == "1":
+                if input_key == "1" or input_key == "TAG1":
                     game_state["event"] = None
                     game_state["broccolis"][0]["points"] += 100
-                elif input_key == "3":
+                elif input_key == "3" or input_key == "TAG3":
                     game_state["event"] = None
                     game_state["broccolis"][1]["points"] += 100
             elif game_state["event"] == "Rain":
-                if input_key == "2":
+                if input_key == "2" or input_key == "TAG2":
                     game_state["event"] = None
                     game_state["broccolis"][0]["points"] += 100
-                elif input_key == "4":
+                elif input_key == "4" or input_key == "TAG4":
                     game_state["event"] = None
                     game_state["broccolis"][1]["points"] += 100
 
