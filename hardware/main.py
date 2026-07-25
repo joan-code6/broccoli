@@ -12,8 +12,7 @@ while True:
         (stat, uid) = reader.SelectTagSN()
         if stat == reader.OK:
             card = int.from_bytes(bytes(uid), "little", False)
-            if card != last_uid:
-                print(str(card))
-                last_uid = card
+            print(str(card))
+                # last_uid = card
 
     sleep(0.05)
