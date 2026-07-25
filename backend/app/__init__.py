@@ -1,10 +1,14 @@
 import random
 import threading
 import time
+from serial_read import SerialReader
 
 from flask import Flask
 
 app = Flask(__name__)
+
+# setup serial
+serial = SerialReader()
 
 game_state = {
     "tick": 0,
@@ -27,7 +31,6 @@ game_state_changed = {
 }
 
 months = ["January","February","March","April","May","June","July","August","September","October","November","December"]
-
 
 def attempt_spawn_event():
     if game_state["event"] is not None:
@@ -52,6 +55,9 @@ def game_loop():
             broccoli["points"] += 1
 
         attempt_spawn_event()
+
+        serial.read_line()
+
 
         for input_key in game_state["inputs"]:
             if game_state["event"] == "Sun":
