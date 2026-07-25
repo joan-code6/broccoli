@@ -1,6 +1,4 @@
-def main():
-    print("Hello from backend!")
-
+from app import app
 
 if __name__ == "__main__":
-    main()
+    app.run(debug=True, port=5000)
