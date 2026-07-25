@@ -47,9 +47,9 @@ class _SignupScreenState extends State<SignupScreen> {
 
     if (!mounted) return;
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('가입 완료, 이제 로그인해줘')));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Account created, able to log in')),
+    );
 
     Navigator.of(context).pop();
   }
