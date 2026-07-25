@@ -59,8 +59,9 @@ def game_loop():
         time.sleep(0.1)
 
         scanned_tag = serial.read_line()
-        if scanned_tag and scanned_tag.strip():
+        if scanned_tag:
             game_state["last_scanned_tag"] = scanned_tag
+            print(f"[game] last_scanned_tag updated: {scanned_tag!r}")
 
         if game_state["phase"] != "playing":
             continue

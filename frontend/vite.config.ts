@@ -11,6 +11,7 @@ export default defineConfig({
       '/interact': 'http://localhost:5000',
       '/start': 'http://localhost:5000',
       '/assign_tag': 'http://localhost:5000',
+      '/debug': 'http://localhost:5000',
     },
   },
 })

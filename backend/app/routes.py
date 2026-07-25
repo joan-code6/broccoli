@@ -1,5 +1,5 @@
 from flask import request, jsonify
-from app import app, game_state, TAG_MAP, VALID_TAG_UIDS, reset_game
+from app import app, game_state, TAG_MAP, VALID_TAG_UIDS, reset_game, serial
 
 @app.route('/')
 def index():
@@ -54,14 +54,24 @@ def assign_tag():
     if existing_role_for_uid and existing_role_for_uid != role:
         return jsonify({"status": "error", "message": f"This tag is already assigned to {existing_role_for_uid}"}), 400
 
-    for u, r in TAG_MAP.items():
+    for u, r in list(TAG_MAP.items()):
         if r == role and u != uid:
-            del TAG_MAP[role]
+            del TAG_MAP[u]
             break
 
     TAG_MAP[uid] = role
     print(f"Assigned tag {uid} -> {role}. TAG_MAP: {TAG_MAP}")
     return jsonify({"status": "success", "tag_assignments": {r: None for r in valid_roles}})
+
+
+@app.route('/debug/serial')
+def debug_serial():
+    return jsonify({
+        "serial_connected": serial.ser is not None,
+        "serial_port": str(serial.ser.port) if serial.ser else None,
+        "last_scanned_tag": game_state.get("last_scanned_tag"),
+        "tag_map": dict(TAG_MAP),
+    })
 
 
 # curl -H "Content-Type: application/json" --request POST -d '{"key":"1"}' http://localhost:5000/interact

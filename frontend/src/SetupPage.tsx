@@ -54,26 +54,28 @@ export default function SetupPage() {
 
   useEffect(() => {
     const scannedTag = gameState?.last_scanned_tag
-    if (!scannedTag || scannedTag === lastProcessedTag.current) return
+    if (!scannedTag || typeof scannedTag !== 'string') return
+    const trimmed = scannedTag.trim()
+    if (!trimmed || trimmed === lastProcessedTag.current) return
     if (currentStep >= 4) return
 
-    lastProcessedTag.current = scannedTag
+    lastProcessedTag.current = trimmed
     setError(null)
 
-    if (!VALID_TAG_UIDS.includes(scannedTag)) {
-      setError(`"${scannedTag}" is not a valid chip.`)
+    if (!VALID_TAG_UIDS.includes(trimmed)) {
+      setError(`"${trimmed}" is not a valid chip.`)
       return
     }
 
     const tagAssignments = gameState?.tag_assignments ?? {}
     for (const [role, uid] of Object.entries(tagAssignments)) {
-      if (uid === scannedTag && role !== SLOTS[currentStep].role) {
+      if (uid === trimmed && role !== SLOTS[currentStep].role) {
         setError(`Already assigned to ${role}. Scan a different chip.`)
         return
       }
     }
 
-    assignTag(SLOTS[currentStep].role, scannedTag).then(ok => {
+    assignTag(SLOTS[currentStep].role, trimmed).then(ok => {
       if (ok) {
         setSuccess(true)
         setError(null)

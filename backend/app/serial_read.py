@@ -7,12 +7,16 @@ class SerialReader:
     def __init__(self):
         self.ser = None
         ports = serial.tools.list_ports.comports()
+        print(f"[serial] Available ports: {[p.device + ' (' + p.description + ')' for p in ports]}")
         for port in ports:
             if "board" in port.description.lower():
+                print(f"[serial] Connecting to {port.device} ({port.description})")
                 self.ser = serial.Serial(port.device, 9600, timeout=1)
                 time.sleep(0.1)
                 self.ser.reset_input_buffer()
                 break
+        if self.ser is None:
+            print("[serial] No port with 'board' in description found!")
 
     def read_line(self):
         if self.ser is None:
@@ -21,9 +25,10 @@ class SerialReader:
             line = self.ser.readline()
             if line:
                 text = line.decode('utf-8', errors='ignore')
-                text = re.sub(r'[^\x20-\x7E]', '', text).strip()
-                if text:
-                    return text
-        except:
-            pass
+                cleaned = re.sub(r'[^\x20-\x7E]', '', text).strip()
+                if cleaned:
+                    print(f"[serial] Raw: {line!r} -> Cleaned: {cleaned!r}")
+                    return cleaned
+        except Exception as e:
+            print(f"[serial] Error: {e}")
         return None
