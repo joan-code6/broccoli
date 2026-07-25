@@ -22,3 +22,6 @@ AI helped with:
 - centering a div
 - part of the calendar animation
 - parts of the broccoli growing scaling algorithm
+- serial communication recieving on the backend side
+- animations
+- the entire setup page
