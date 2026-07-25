@@ -1,5 +1,5 @@
 from flask import request, jsonify
-from app import app, game_state
+from app import app, game_state, game_state_changed
 
 @app.route('/')
 def index():
@@ -15,7 +15,13 @@ def index():
 
 @app.route('/state')
 def state():
-    return game_state
+    has_changed = game_state_changed["changed"]
+    game_state_changed["changed"] = False
+
+    return {
+        "changed": has_changed,
+        "state": game_state,
+    }
 
 # curl -H "Content-Type: application/json" --request POST -d '{"key":"1"}' http://localhost:5000/interact
 @app.route('/interact', methods=['POST'])
