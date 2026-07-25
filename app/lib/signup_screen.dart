@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -15,12 +16,27 @@ class _SignupScreenState extends State<SignupScreen> {
   bool _obscurePassword = true;
   bool _isSaving = false;
   String? _errorMessage;
+  Timer? _errorTimer;
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
+    _errorTimer?.cancel();
     super.dispose();
+  }
+
+  void _showError(String message) {
+    _errorTimer?.cancel();
+    setState(() {
+      _errorMessage = message;
+    });
+    _errorTimer = Timer(const Duration(seconds: 2), () {
+      if (!mounted) return;
+      setState(() {
+        _errorMessage = null;
+      });
+    });
   }
 
   Future<void> _handleSignup() async {
@@ -28,9 +44,7 @@ class _SignupScreenState extends State<SignupScreen> {
     final password = _passwordController.text;
 
     if (email.isEmpty || password.isEmpty) {
-      setState(() {
-        _errorMessage = 'Enter your username and password';
-      });
+      _showError('Enter your username and password');
       return;
     }
 
@@ -38,6 +52,7 @@ class _SignupScreenState extends State<SignupScreen> {
       _isSaving = true;
       _errorMessage = null;
     });
+    _errorTimer?.cancel();
 
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('saved_email', email);
