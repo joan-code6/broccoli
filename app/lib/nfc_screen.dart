@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:nfc_manager/nfc_manager.dart';
+import 'history_screen.dart';
 
 class NfcScreen extends StatefulWidget {
   const NfcScreen({super.key});
@@ -46,9 +47,9 @@ class _NfcScreenState extends State<NfcScreen> {
   }
 
   void _handleTag() {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('Leaderboard complete')));
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => const HistoryScreen(records: [])),
+    );
   }
 
   @override
