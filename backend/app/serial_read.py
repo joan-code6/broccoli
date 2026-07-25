@@ -25,10 +25,13 @@ class SerialReader:
             line = self.ser.readline()
             if line:
                 text = line.decode('utf-8', errors='ignore')
-                cleaned = re.sub(r'[^\x20-\x7E]', '', text).strip()
-                if cleaned:
-                    print(f"[serial] Raw: {line!r} -> Cleaned: {cleaned!r}")
-                    return cleaned
-        except Exception as e:
+                chunks = re.split(r'[\r\n]+', text)
+                chunks = [c.strip() for c in chunks if c.strip()]
+                if chunks:
+                    if len(chunks) > 1:
+                        print(f"[serial] Split multi-tag line: {chunks}")
+                    print(f"[serial] Raw: {line!r} -> Result: {chunks[-1]!r}")
+                    return chunks[-1]
+        except serial.SerialException as e:
             print(f"[serial] Error: {e}")
         return None
