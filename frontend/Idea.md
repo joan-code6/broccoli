@@ -28,3 +28,6 @@ This should look handdrawn make sure that that works out!
 
 ## Layout of the Website
 The website should be split into three columns going from the top to the bottom.  
+On the right and left column each users broccoli should be displayed and below a score of each broccoli. Additionaly the users Icon (just theire first letter) should be displayed above the broccoli
+
+IN the middle column
