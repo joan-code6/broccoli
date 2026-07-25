@@ -22,7 +22,35 @@ const SLOTS = [
   { role: 'TAG4', label: 'Player 2 — Rain', icon: '/assets/rain.svg' },
 ]
 
-const VALID_TAG_UIDS = ['200381038', '328536700', '3285396700', '1964104076', '2601429390']
+const VALID_TAG_UIDS = ['3285396700', '1964104076', '2601429390', '2600381038']
+
+const TAG_CONFIG: Record<string, string> = {
+  '003': '2600381038', '038': '2600381038', '103': '2600381038',
+  '381': '2600381038', '600': '2600381038', '810': '2600381038',
+  '014': '2601429390', '142': '2601429390', '293': '2601429390',
+  '390': '2601429390', '429': '2601429390', '601': '2601429390',
+  '939': '2601429390',
+  '040': '1964104076', '076': '1964104076', '104': '1964104076',
+  '196': '1964104076', '407': '1964104076', '410': '1964104076',
+  '641': '1964104076', '964': '1964104076',
+  '285': '3285396700', '328': '3285396700', '396': '3285396700',
+  '539': '3285396700', '670': '3285396700', '700': '3285396700',
+  '853': '3285396700', '967': '3285396700',
+}
+
+function findTagUid(scanned: string): string | null {
+  for (let i = 0; i <= scanned.length - 3; i++) {
+    const sub = scanned.substring(i, i + 3)
+    if (sub === '260') {
+      if (i + 3 < scanned.length) {
+        return scanned[i + 3] === '1' ? '2601429390' : '2600381038'
+      }
+      return '2600381038'
+    }
+    if (sub in TAG_CONFIG) return TAG_CONFIG[sub]
+  }
+  return null
+}
 
 export default function SetupPage() {
   const [gameState, setGameState] = useState<GameState | null>(null)
@@ -62,20 +90,21 @@ export default function SetupPage() {
     lastProcessedTag.current = trimmed
     setError(null)
 
-    if (!VALID_TAG_UIDS.includes(trimmed)) {
+    const resolvedUid = findTagUid(trimmed)
+    if (!resolvedUid || !VALID_TAG_UIDS.includes(resolvedUid)) {
       setError(`"${trimmed}" is not a valid chip.`)
       return
     }
 
     const tagAssignments = gameState?.tag_assignments ?? {}
     for (const [role, uid] of Object.entries(tagAssignments)) {
-      if (uid === trimmed && role !== SLOTS[currentStep].role) {
+      if (uid === resolvedUid && role !== SLOTS[currentStep].role) {
         setError(`Already assigned to ${role}. Scan a different chip.`)
         return
       }
     }
 
-    assignTag(SLOTS[currentStep].role, trimmed).then(ok => {
+    assignTag(SLOTS[currentStep].role, resolvedUid).then(ok => {
       if (ok) {
         setSuccess(true)
         setError(null)

@@ -1,5 +1,5 @@
 from flask import request, jsonify
-from app import app, game_state, TAG_MAP, VALID_TAG_UIDS, reset_game, serial
+from app import app, game_state, TAG_MAP, VALID_TAG_UIDS, find_tag_uid, reset_game, serial
 
 @app.route('/')
 def index():
@@ -47,8 +47,10 @@ def assign_tag():
     if role not in valid_roles:
         return jsonify({"status": "error", "message": f"Invalid role. Must be one of {valid_roles}"}), 400
 
-    if uid not in VALID_TAG_UIDS:
+    resolved_uid = find_tag_uid(uid) or uid
+    if resolved_uid not in VALID_TAG_UIDS:
         return jsonify({"status": "error", "message": "Tag UID not in allowed list"}), 400
+    uid = resolved_uid
 
     existing_role_for_uid = TAG_MAP.get(uid)
     if existing_role_for_uid and existing_role_for_uid != role:

@@ -25,7 +25,31 @@ game_state = {
 
 TAG_MAP = {}
 
-VALID_TAG_UIDS = ["200381038", "328536700", "3285396700", "1964104076", "2601429390"]
+TAG_CONFIG = {
+    "003": "2600381038", "038": "2600381038", "103": "2600381038",
+    "381": "2600381038", "600": "2600381038", "810": "2600381038",
+    "014": "2601429390", "142": "2601429390", "293": "2601429390",
+    "390": "2601429390", "429": "2601429390", "601": "2601429390",
+    "939": "2601429390",
+    "040": "1964104076", "076": "1964104076", "104": "1964104076",
+    "196": "1964104076", "407": "1964104076", "410": "1964104076",
+    "641": "1964104076", "964": "1964104076",
+    "285": "3285396700", "328": "3285396700", "396": "3285396700",
+    "539": "3285396700", "670": "3285396700", "700": "3285396700",
+    "853": "3285396700", "967": "3285396700",
+}
+VALID_TAG_UIDS = list(set(TAG_CONFIG.values()))
+
+def find_tag_uid(scanned):
+    for i in range(len(scanned) - 2):
+        sub = scanned[i:i+3]
+        if sub == "260":
+            if i + 3 < len(scanned):
+                return "2601429390" if scanned[i + 3] == "1" else "2600381038"
+            return "2600381038"
+        if sub in TAG_CONFIG:
+            return TAG_CONFIG[sub]
+    return None
 
 months = ["January","February","March","April","May","June","July","August","September","October","November","December"]
 
@@ -87,9 +111,13 @@ def game_loop():
         for input_key in game_state["inputs"]:
             if input_key in TAG_MAP:
                 input_key = TAG_MAP[input_key]
-            elif input_key not in ("1", "2", "3", "4", "TAG1", "TAG2", "TAG3", "TAG4"):
-                print(f"Unknown tag: {input_key} — add it to TAG_MAP in __init__.py")
-                continue
+            else:
+                matched_uid = find_tag_uid(input_key)
+                if matched_uid and matched_uid in TAG_MAP:
+                    input_key = TAG_MAP[matched_uid]
+                elif input_key not in ("1", "2", "3", "4", "TAG1", "TAG2", "TAG3", "TAG4"):
+                    print(f"Unknown tag: {input_key} — add it to TAG_MAP in __init__.py")
+                    continue
 
             if game_state["event"] == "Sun":
                 if input_key == "1" or input_key == "TAG1":
