@@ -188,13 +188,13 @@ function App() {
             <div className="flex flex-col items-center gap-5">
               <button
                 onClick={handleStart}
-                className="px-12 py-5 bg-white/10 hover:bg-white/20 text-white text-2xl font-bold backdrop-blur-sm transition-all cursor-pointer"
+                className="px-12 py-5 bg-white/10 hover:bg-white/20 text-white text-2xl font-bold backdrop-blur-sm transition-all cursor-pointer rounded-2xl"
               >
                 Play Again
               </button>
               <button
                 onClick={() => setShowSetup(true)}
-                className="text-lg text-white/50 hover:text-white/80 transition-colors cursor-pointer"
+                className="text-lg text-white/50 hover:text-white/80 transition-colors cursor-pointer rounded-full"
               >
                 Setup Tags
               </button>
@@ -211,13 +211,13 @@ function App() {
               <button
                 onClick={handleStart}
                 disabled={!allTagsAssigned}
-                className="px-12 py-5 bg-white/10 hover:bg-white/20 disabled:bg-white/5 disabled:cursor-not-allowed text-white text-2xl font-bold backdrop-blur-sm transition-all cursor-pointer"
+                className="px-12 py-5 bg-white/10 hover:bg-white/20 disabled:bg-white/5 disabled:cursor-not-allowed text-white text-2xl font-bold backdrop-blur-sm transition-all cursor-pointer rounded-2xl"
               >
                 Start Game
               </button>
               <button
                 onClick={() => setShowSetup(true)}
-                className="text-lg text-white/50 hover:text-white/80 transition-colors cursor-pointer"
+                className="text-lg text-white/50 hover:text-white/80 transition-colors cursor-pointer rounded-full"
               >
                 Setup Tags
               </button>

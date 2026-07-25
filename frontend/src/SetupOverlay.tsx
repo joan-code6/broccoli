@@ -201,7 +201,7 @@ export default function SetupOverlay({ onClose }: SetupOverlayProps) {
         {tagConfig && (
           <button
             onClick={onClose}
-            className="mt-4 text-sm text-white/40 hover:text-white/70 transition-colors cursor-pointer"
+            className="mt-4 text-sm text-white/40 hover:text-white/70 transition-colors cursor-pointer rounded-full"
           >
             Back to Game
           </button>
