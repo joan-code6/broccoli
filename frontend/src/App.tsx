@@ -60,7 +60,7 @@ function Calendar({ month }: { month: string }) {
         <div className="relative">
           <div className={`relative size-55 ${folding ? 'animate-calendar-fold' : ''}`}>
             <img src="/assets/calendar.svg" className="size-55" />
-            <span className="absolute top-[65%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-xl text-white font-bold scale-200">
+            <span className="absolute top-[65%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-xl text-white font-bold scale-200" style={{ color: 'white' }}>
               {displayMonth}
             </span>
           </div>
