@@ -33,13 +33,10 @@ def attempt_spawn_event():
     game_state["event"] = random.choice(["Sun", "Rain"])
 
 def game_loop():
-    while True:
+    while game_state["month"] != "December":
         time.sleep(0.1)
         game_state["tick"] += 1
         game_state["month"] = months[game_state["tick"] // 50]
-        if game_state["month"] == "December":
-            print("game end")
-            return
 
         if game_state["tick"] % 5 == 0:
             game_state["broccoli_1"] += 1
@@ -72,6 +69,9 @@ def game_loop():
                     game_state["broccoli_2"] += 5
 
         game_state["inputs"] = []
+
+    print("Game complete")
+    game_state["event"] = None
 
 
 threading.Thread(target=game_loop, daemon=True).start()
