@@ -1,8 +1,55 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:nfc_manager/nfc_manager.dart';
 
-class NfcScreen extends StatelessWidget {
+class NfcScreen extends StatefulWidget {
   const NfcScreen({super.key});
+
+  @override
+  State<NfcScreen> createState() => _NfcScreenState();
+}
+
+class _NfcScreenState extends State<NfcScreen> {
+  bool _isSessionActive = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _startNfcSession();
+  }
+
+  @override
+  void dispose() {
+    if (_isSessionActive) {
+      NfcManager.instance.stopSession();
+    }
+    super.dispose();
+  }
+
+  Future<void> _startNfcSession() async {
+    final isAvailable = await NfcManager.instance.isAvailable();
+
+    if (!isAvailable) {
+      return;
+    }
+
+    _isSessionActive = true;
+
+    await NfcManager.instance.startSession(
+      onDiscovered: (NfcTag tag) async {
+        await NfcManager.instance.stopSession();
+        _isSessionActive = false;
+        if (!mounted) return;
+        _handleTag();
+      },
+    );
+  }
+
+  void _handleTag() {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(const SnackBar(content: Text('Leaderboard complete')));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +90,29 @@ class NfcScreen extends StatelessWidget {
                     width: 240,
                     height: 240,
                     repeat: true,
+                  ),
+                  const SizedBox(height: 32),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 52,
+                    child: ElevatedButton(
+                      onPressed: _handleTag,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF6C63FF),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: const Text(
+                        'Next (test)',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
                   ),
                 ],
               ),
