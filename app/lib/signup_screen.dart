@@ -14,6 +14,7 @@ class _SignupScreenState extends State<SignupScreen> {
   final TextEditingController _passwordController = TextEditingController();
   bool _obscurePassword = true;
   bool _isSaving = false;
+  String? _errorMessage;
 
   @override
   void dispose() {
@@ -27,14 +28,15 @@ class _SignupScreenState extends State<SignupScreen> {
     final password = _passwordController.text;
 
     if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('아이디와 비밀번호를 모두 입력해줘')));
+      setState(() {
+        _errorMessage = 'Enter your username and password';
+      });
       return;
     }
 
     setState(() {
       _isSaving = true;
+      _errorMessage = null;
     });
 
     final prefs = await SharedPreferences.getInstance();
@@ -48,7 +50,7 @@ class _SignupScreenState extends State<SignupScreen> {
     if (!mounted) return;
 
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Account created, able to log in')),
+      const SnackBar(content: Text('Account created, able to login')),
     );
 
     Navigator.of(context).pop();
@@ -170,7 +172,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       const SizedBox(height: 28),
                       _buildTextField(
                         controller: _emailController,
-                        hint: 'Email',
+                        hint: 'Username',
                         icon: Icons.person_outline,
                       ),
                       const SizedBox(height: 14),
@@ -225,6 +227,15 @@ class _SignupScreenState extends State<SignupScreen> {
                                 ),
                         ),
                       ),
+                      const SizedBox(height: 12),
+                      if (_errorMessage != null)
+                        Text(
+                          _errorMessage!,
+                          style: const TextStyle(
+                            fontSize: 13,
+                            color: Colors.red,
+                          ),
+                        ),
                     ],
                   ),
                 ),
