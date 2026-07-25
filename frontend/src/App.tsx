@@ -1,25 +1,8 @@
-import { useState, useCallback } from 'react'
 import { computeScale } from './broccoli-growth'
 
 const MONTHS = ['Jan.', 'Feb.', 'Mar.', 'Apr.', 'May', 'Jun.', 'Jul.', 'Aug.', 'Sep.', 'Oct.', 'Nov.', 'Dec.']
 
 function Calendar() {
-  const [displayedMonth, setDisplayedMonth] = useState(0)
-  const [nextMonth, setNextMonth] = useState(1)
-  const [isAnimating, setIsAnimating] = useState(false)
-
-  const goToNextMonth = useCallback(() => {
-    if (isAnimating) return
-    const next = (displayedMonth + 1) % 12
-    setIsAnimating(true)
-    setNextMonth(next)
-    setTimeout(() => {
-      setDisplayedMonth(next)
-      setNextMonth((next + 1) % 12)
-      setIsAnimating(false)
-    }, 600)
-  }, [isAnimating, displayedMonth])
-
   return (
     <div className="flex flex-col items-center gap-4">
       <div
@@ -30,15 +13,12 @@ function Calendar() {
           <div className="relative size-55">
             <img src="/assets/calendar.svg" className="size-55" />
             <span className="absolute top-[65%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-xl font-bold scale-200">
-              {MONTHS[nextMonth]}
+              {MONTHS[1]}
             </span>
           </div>
         </div>
 
-        <div
-          className={`relative ${isAnimating ? 'animate-calendar-fold' : ''}`}
-          style={{ transformOrigin: 'top center', backfaceVisibility: 'hidden' }}
-        >
+        <div className="relative">
           <div className="relative size-55">
             <img src="/assets/calendar.svg" className="size-55" />
             <span className="absolute text-white top-[65%] left-1/2 -translate-x-1/2 -translate-y-1/2 text-xl font-bold scale-200">
@@ -49,23 +29,13 @@ function Calendar() {
       </div>
 
       <p className="text-3xl text-center">Event Name</p>
-
-      <button
-        onClick={goToNextMonth}
-        className="rounded bg-gray-200 px-4 py-2 text-sm hover:bg-gray-300 active:bg-gray-400"
-      >
-        Next Month
-      </button>
     </div>
   )
 }
 
 function App() {
-  const [score1, setScore1] = useState(30)
-  const [score2, setScore2] = useState(60)
-
-  const scale1 = computeScale(score1)
-  const scale2 = computeScale(score2)
+  const scale1 = computeScale(0)
+  const scale2 = computeScale(0)
 
   return (
     <>
@@ -82,46 +52,27 @@ function App() {
 
       <div className="grid grid-cols-3 min-h-[100svh]">
         <div className="flex flex-col items-center">
-          <div className="flex flex-col items-center justify-end h-[70svh]">
+          <div className="broccoli-1 flex flex-col items-center justify-end h-[70svh]">
             <img
               src="/assets/broccoli.svg"
               className="size-75 object-contain object-bottom"
               style={{ transform: `scale(${scale1}) translateY(9px)`, transformOrigin: 'bottom center' }}
             />
           </div>
-          <p className="text-3xl text-center mt-4">{score1}</p>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={score1}
-            onChange={e => setScore1(Number(e.target.value))}
-            className="mt-2 w-48"
-          />
         </div>
 
-        <div className="flex flex-col items-center justify-center gap-4">
-          <img src="/assets/sun.svg" className="size-55" />
+        <div className="flex flex-col items-center justify-center gap-4 relative pt-55">
           <Calendar />
         </div>
 
         <div className="flex flex-col items-center">
-          <div className="flex flex-col items-center justify-end h-[70svh]">
+          <div className="broccoli-2 flex flex-col items-center justify-end h-[70svh]">
             <img
               src="/assets/broccoli.svg"
               className="size-75 object-contain object-bottom"
               style={{ transform: `scale(${scale2}) translateY(9px)`, transformOrigin: 'bottom center' }}
             />
           </div>
-          <p className="text-3xl text-center mt-4">{score2}</p>
-          <input
-            type="range"
-            min="0"
-            max="100"
-            value={score2}
-            onChange={e => setScore2(Number(e.target.value))}
-            className="mt-2 w-48"
-          />
         </div>
       </div>
     </>
