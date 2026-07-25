@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'signup_screen.dart';
+import 'nfc_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -73,9 +74,9 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     if (isMatch) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text('Login complete')));
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const NfcScreen()),
+      );
     } else {
       _showError('Incorrect email or password');
     }
@@ -189,7 +190,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       const SizedBox(height: 28),
                       _buildTextField(
                         controller: _emailController,
-                        hint: 'Enter your username',
+                        hint: 'Email',
                         icon: Icons.person_outline,
                       ),
                       const SizedBox(height: 14),
