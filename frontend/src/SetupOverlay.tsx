@@ -22,12 +22,16 @@ interface TagConfig {
   valid_tag_uids: string[]
 }
 
-const TAG_SLOTS = [
-  { role: 'TAG1', label: 'Player 1 - Sun', icon: '/assets/sun.svg' },
-  { role: 'TAG2', label: 'Player 1 - Rain', icon: '/assets/rain.svg' },
-  { role: 'TAG3', label: 'Player 2 - Sun', icon: '/assets/sun.svg' },
-  { role: 'TAG4', label: 'Player 2 - Rain', icon: '/assets/rain.svg' },
-]
+function getTagSlots(usernames: { p1: string | null, p2: string | null }) {
+  const p1 = usernames?.p1 ?? 'Player 1'
+  const p2 = usernames?.p2 ?? 'Player 2'
+  return [
+    { role: 'TAG1', label: `${p1} - Sun`, icon: '/assets/sun.svg' },
+    { role: 'TAG2', label: `${p1} - Rain`, icon: '/assets/rain.svg' },
+    { role: 'TAG3', label: `${p2} - Sun`, icon: '/assets/sun.svg' },
+    { role: 'TAG4', label: `${p2} - Rain`, icon: '/assets/rain.svg' },
+  ]
+}
 
 function findTagUid(scanned: string, tagConfig: Record<string, string>): string | null {
   for (let i = 0; i <= scanned.length - 3; i++) {
@@ -54,6 +58,7 @@ export default function SetupOverlay({ onClose }: SetupOverlayProps) {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
   const lastProcessedTag = useRef<string | null>(null)
+  const TAG_SLOTS = getTagSlots(gameState?.usernames ?? { p1: null, p2: null })
 
   useEffect(() => {
     fetch('/tag_config')
