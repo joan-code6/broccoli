@@ -12,6 +12,7 @@ export default defineConfig({
       '/start': 'http://localhost:5000',
       '/assign_tag': 'http://localhost:5000',
       '/tag_config': 'http://localhost:5000',
+      '/register_player': 'http://localhost:5000',
       '/debug': 'http://localhost:5000',
     },
   },

@@ -112,11 +112,27 @@ def register_player():
     data = request.get_json()
     print(data)
 
-    if "username" in data:
-        print(data["username"], "pressed")
-        with inputs_lock:
-            game_state["usernames"].append(data["username"])
-            return jsonify({"status": "success","received": data})
-    else:
+    if "username" not in data:
         print("no input provided")
         return jsonify({"status": "error","received": ""})
+
+    username = data["username"]
+    slot = data.get("slot")
+
+    with inputs_lock:
+        if slot in ("p1", "p2"):
+            if not username:
+                game_state["usernames"][slot] = None
+                print(f"Cleared {slot}")
+            else:
+                other = "p2" if slot == "p1" else "p1"
+                if game_state["usernames"][other] == username:
+                    game_state["usernames"][other] = None
+                game_state["usernames"][slot] = username
+                print(f"Assigned {username} to {slot}")
+            return jsonify({"status": "success", "received": data})
+        else:
+            if username not in game_state["registered_usernames"]:
+                game_state["registered_usernames"].append(username)
+            print(f"Registered {username}")
+            return jsonify({"status": "success", "received": data})

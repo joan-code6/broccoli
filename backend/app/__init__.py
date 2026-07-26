@@ -21,7 +21,8 @@ game_state = {
     "phase": "waiting",
     "winner": None,
     "last_scanned_tag": None,
-    "usernames": []
+    "registered_usernames": [],
+    "usernames": {"p1": None, "p2": None}
 }
 
 TAG_MAP = {}

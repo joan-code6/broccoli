@@ -18,6 +18,8 @@ interface GameState {
   winner: number | null
   last_scanned_tag: string | null
   tag_assignments: Record<string, string | null>
+  registered_usernames: string[]
+  usernames: { p1: string | null, p2: string | null }
 }
 
 function Calendar({ month }: { month: string }) {
@@ -176,14 +178,14 @@ function App() {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
           <RoughCard className="p-16 px-24 shadow-2xl flex flex-col items-center gap-10 w-full max-w-2xl text-center">
             <h1 className="text-6xl font-black text-white drop-shadow-2xl">
-              {winner === 1 && 'Player 1 Wins!'}
-              {winner === 2 && 'Player 2 Wins!'}
+              {winner === 1 && `${gameState?.usernames?.p1 ?? 'Player 1'} Wins!`}
+              {winner === 2 && `${gameState?.usernames?.p2 ?? 'Player 2'} Wins!`}
               {winner === 0 && "It's a Tie!"}
             </h1>
             <div className="flex gap-10 text-3xl font-bold text-white/70">
-              <span>P1: {gameState?.broccoli_1 ?? 0}</span>
+              <span>{gameState?.usernames?.p1 ?? 'P1'}: {gameState?.broccoli_1 ?? 0}</span>
               <span className="text-white/30">|</span>
-              <span>P2: {gameState?.broccoli_2 ?? 0}</span>
+              <span>{gameState?.usernames?.p2 ?? 'P2'}: {gameState?.broccoli_2 ?? 0}</span>
             </div>
             <div className="flex flex-col items-center gap-5">
               <button
@@ -228,6 +230,9 @@ function App() {
 
       <div className="grid grid-cols-3 min-h-[100svh]">
         <div className="flex flex-col items-center">
+          {gameState?.usernames?.p1 && (
+            <p className="text-2xl font-bold text-white/80 mt-6 mb-2 drop-shadow-lg">{gameState.usernames.p1}</p>
+          )}
           <div ref={broccoli1Ref} className="broccoli-1 flex flex-col items-center justify-end h-[70svh]">
             <img
               src="/assets/broccoli.svg"
@@ -259,6 +264,9 @@ function App() {
         </div>
 
         <div className="flex flex-col items-center">
+          {gameState?.usernames?.p2 && (
+            <p className="text-2xl font-bold text-white/80 mt-6 mb-2 drop-shadow-lg">{gameState.usernames.p2}</p>
+          )}
           <div ref={broccoli2Ref} className="broccoli-2 flex flex-col items-center justify-end h-[70svh]">
             <img
               src="/assets/broccoli.svg"
