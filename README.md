@@ -1,6 +1,10 @@
 # broccoli
 
-A broccoli virtual pet multiplayer competitive game!
+A virtual broccoli pet multiplayer competitive game!
+
+> [!IMPORTANT]
+> You need a NFC reader and 4 NFC chips to play this game. <br>
+> You can try the game out by coming to the bus.
 
 
 ## Setup
