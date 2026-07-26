@@ -2,13 +2,29 @@
 
 A broccoli virtual pet multiplayer competitive game!
 
-## tech architecture
+
+## Setup
+
+
+### Prerequisites:
+
+- Python3
+- npm
+
+### Installation
+
+1. `git clone https://github.com/joan-code6/broccoli`
+2. `cd broccoli`
+3. `sh run.sh`
+4. Have fun!
+
+## Tech Architecture
 - MicroPython running on a Pico which communicates to the software by serial
 - Frontend displaying the 2 broccolis too
 - Python Flask backend handling the game loop and serial reading
 - Flutter based mobile app
 
-## folder structure
+## Folder Structure
 - `/app` contains the mobile app
 - `/backend` contains the Flask backend
 - `/frontend` contains the React + Vite frontend
@@ -22,6 +38,6 @@ AI helped with:
 - centering a div
 - part of the calendar animation
 - parts of the broccoli growing scaling algorithm
-- serial communication recieving on the backend side
+- serial communication receiving on the backend side
 - animations
 - the entire setup page

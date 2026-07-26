@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# intialize the ascii art :D
+# initialize the ascii art :D
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
@@ -17,11 +17,11 @@ fi
 echo "venv initialized sourcing it"
 source "$SCRIPT_DIR/venv/bin/activate"
 
-echo "intializing backend"
+echo "initializing backend"
 
 pip install uv
 
-echo "installing backend dependencys"
+echo "installing backend dependencies"
 cd "$SCRIPT_DIR/backend"
 uv sync
 
@@ -31,7 +31,7 @@ uv run main.py &
 
 BACKEND_PID=$!
 
-echo "backend started succsesfully"
+echo "backend started successfully"
 
 echo "initializing frontend"
 
