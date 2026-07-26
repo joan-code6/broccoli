@@ -4,7 +4,10 @@ A virtual broccoli pet multiplayer competitive game!
 
 > [!IMPORTANT]
 > You need a NFC reader and 4 NFC chips to play this game. <br>
-> You can try the game out by coming to the bus.
+> You can try the game out by finding us!
+
+
+[Demo Video](https://user-cdn.hackclub-assets.com/019f9dc0-2213-7ab4-9a04-f0c7d4e0ba9f/broccoli.mp4)
 
 
 ## Setup
