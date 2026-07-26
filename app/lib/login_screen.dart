@@ -1,10 +1,8 @@
-import 'dart:async';
+import 'dart:convert';
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter/gestures.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'signup_screen.dart';
-import 'nfc_screen.dart';
+import 'package:http/http.dart' as http;
+import 'history_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,71 +12,77 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _emailController = TextEditingController();
-  final TextEditingController _passwordController = TextEditingController();
-  bool _obscurePassword = true;
-  bool _isChecking = false;
+  final TextEditingController _serverController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
+  bool _isLoading = false;
   String? _errorMessage;
-  Timer? _errorTimer;
 
   @override
   void dispose() {
-    _emailController.dispose();
-    _passwordController.dispose();
-    _errorTimer?.cancel();
+    _serverController.dispose();
+    _usernameController.dispose();
     super.dispose();
   }
 
-  void _showError(String message) {
-    _errorTimer?.cancel();
-    setState(() {
-      _errorMessage = message;
-    });
-    _errorTimer = Timer(const Duration(seconds: 2), () {
-      if (!mounted) return;
-      setState(() {
-        _errorMessage = null;
-      });
-    });
+  String _normalizeServerUrl(String input) {
+    var value = input.trim();
+    if (!value.startsWith('http://') && !value.startsWith('https://')) {
+      value = 'http://$value';
+    }
+    if (value.endsWith('/')) {
+      value = value.substring(0, value.length - 1);
+    }
+    return value;
   }
 
   Future<void> _handleLogin() async {
-    final email = _emailController.text.trim();
-    final password = _passwordController.text;
+    final serverInput = _serverController.text.trim();
+    final username = _usernameController.text.trim();
 
-    if (email.isEmpty || password.isEmpty) {
-      _showError('Enter your email and password');
+    if (serverInput.isEmpty || username.isEmpty) {
+      setState(() {
+        _errorMessage = 'Enter server address and username';
+      });
       return;
     }
 
     setState(() {
-      _isChecking = true;
+      _isLoading = true;
       _errorMessage = null;
     });
-    _errorTimer?.cancel();
 
-    final prefs = await SharedPreferences.getInstance();
-    final savedEmail = prefs.getString('saved_email');
-    final savedPassword = prefs.getString('saved_password');
+    final baseUrl = _normalizeServerUrl(serverInput);
 
-    if (!mounted) return;
-
-    final isMatch =
-        savedEmail != null &&
-        savedPassword != null &&
-        email == savedEmail &&
-        password == savedPassword;
-
-    setState(() {
-      _isChecking = false;
-    });
-
-    if (isMatch) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const NfcScreen()),
+    try {
+      final response = await http.post(
+        Uri.parse('$baseUrl/register_player'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'username': username}),
       );
-    } else {
-      _showError('Incorrect email or password');
+
+      if (!mounted) return;
+
+      setState(() {
+        _isLoading = false;
+      });
+
+      if (response.statusCode == 200) {
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => const HistoryScreen(records: []),
+          ),
+        );
+      } else {
+        setState(() {
+          _errorMessage = 'Server rejected the request';
+        });
+      }
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+        _errorMessage = 'Could not reach the server';
+      });
     }
   }
 
@@ -101,8 +105,6 @@ class _LoginScreenState extends State<LoginScreen> {
     required TextEditingController controller,
     required String hint,
     required IconData icon,
-    bool obscureText = false,
-    Widget? suffixIcon,
   }) {
     return Container(
       height: 48,
@@ -112,11 +114,9 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       child: TextField(
         controller: controller,
-        obscureText: obscureText,
         style: const TextStyle(fontSize: 14),
         decoration: InputDecoration(
           prefixIcon: Icon(icon, color: Colors.grey, size: 20),
-          suffixIcon: suffixIcon,
           hintText: hint,
           hintStyle: const TextStyle(fontSize: 14, color: Colors.grey),
           border: InputBorder.none,
@@ -183,42 +183,28 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: 6),
                       const Text(
-                        'Hey enter your details to sign in to your account',
+                        'Enter the server address and your username',
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 13, color: Colors.grey),
                       ),
                       const SizedBox(height: 28),
                       _buildTextField(
-                        controller: _emailController,
-                        hint: 'Email',
-                        icon: Icons.person_outline,
+                        controller: _serverController,
+                        hint: 'Server address (e.g. 192.168.0.10:5000)',
+                        icon: Icons.dns_outlined,
                       ),
                       const SizedBox(height: 14),
                       _buildTextField(
-                        controller: _passwordController,
-                        hint: 'Enter your password',
-                        icon: Icons.lock_outline,
-                        obscureText: _obscurePassword,
-                        suffixIcon: IconButton(
-                          icon: Icon(
-                            _obscurePassword
-                                ? Icons.visibility_off_outlined
-                                : Icons.visibility_outlined,
-                            color: Colors.grey,
-                          ),
-                          onPressed: () {
-                            setState(() {
-                              _obscurePassword = !_obscurePassword;
-                            });
-                          },
-                        ),
+                        controller: _usernameController,
+                        hint: 'Username',
+                        icon: Icons.person_outline,
                       ),
                       const SizedBox(height: 24),
                       SizedBox(
                         width: double.infinity,
                         height: 52,
                         child: ElevatedButton(
-                          onPressed: _isChecking ? null : _handleLogin,
+                          onPressed: _isLoading ? null : _handleLogin,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF6C63FF),
                             shape: RoundedRectangleBorder(
@@ -226,7 +212,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             elevation: 0,
                           ),
-                          child: _isChecking
+                          child: _isLoading
                               ? const SizedBox(
                                   width: 20,
                                   height: 20,
@@ -255,38 +241,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             color: Colors.red,
                           ),
                         ),
-                      const SizedBox(height: 20),
-                      Align(
-                        alignment: Alignment.center,
-                        child: RichText(
-                          textAlign: TextAlign.center,
-                          text: TextSpan(
-                            style: const TextStyle(
-                              fontSize: 13,
-                              color: Colors.grey,
-                            ),
-                            children: [
-                              const TextSpan(text: "Don't have an account? "),
-                              TextSpan(
-                                text: 'Signup Now',
-                                style: const TextStyle(
-                                  color: Color(0xFF6C63FF),
-                                  fontWeight: FontWeight.w600,
-                                ),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const SignupScreen(),
-                                      ),
-                                    );
-                                  },
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
